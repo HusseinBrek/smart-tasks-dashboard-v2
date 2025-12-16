@@ -4,13 +4,24 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import PendingIcon from "@mui/icons-material/Pending";
 import { BasicCard } from "../../components/common/Card";
-import { mockTasks } from "../../data/mockTasks";
+import { useTasks } from "../../context/TasksContext";
 
 export default function Dashboard() {
-  const totalTasks = mockTasks.length;
-  const completedTasks = mockTasks.filter((t) => t.completed).length;
+  const { tasks, isLoading, error } = useTasks();
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((t) => t.completed).length;
   const pendingTasks = totalTasks - completedTasks;
-  const highPriorityTasks = mockTasks.filter(
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return (
+      <div>Error: {typeof error === "string" ? error : error.message}</div>
+    );
+  }
+
+  const highPriorityTasks = tasks.filter(
     (t) => t.priority === "high" && !t.completed
   ).length;
 

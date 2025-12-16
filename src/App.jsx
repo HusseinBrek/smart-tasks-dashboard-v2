@@ -4,6 +4,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Tasks } from "./pages/Tasks";
 import { Settings } from "./pages/Settings";
 import Layout from "./components/layout/Layout";
+import { TasksProvider } from "./context/TasksProvider";
 
 const theme = createTheme({});
 
@@ -11,13 +12,15 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="tasks" element={<Tasks />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
-      </Routes>
+      <TasksProvider>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="tasks" element={<Tasks />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+        </Routes>
+      </TasksProvider>
     </ThemeProvider>
   );
 }

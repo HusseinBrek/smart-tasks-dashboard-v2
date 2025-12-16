@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -12,21 +12,22 @@ import TaskItem from "../TaskItem/TaskItem";
 import { Button } from "../../common/Button";
 import { ChildModal } from "../../common/Modal";
 import { TaskForm } from "../TaskForm";
-import {
-  getTasks,
-  createTask,
-  updateTask,
-  deleteTask,
-} from "../../../api/tasksService";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useTasks } from "../../../context/TasksContext";
 
 export default function TaskList() {
-  const [tasks, setTasks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    tasks,
+    isLoading,
+    error,
+    toggleTaskCompletion,
+    deleteTask,
+    addNewTask,
+    editTask,
+  } = useTasks();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -48,38 +49,13 @@ export default function TaskList() {
     setEditingTask(null);
   };
 
-  useEffect(() => {
-    async function fetchTasks() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const data = await getTasks();
-        setTasks(data.slice().reverse());
-      } catch (err) {
-        setError(
-          `Failed to load tasks. Check if JSON Server is running on port 3001. ${err.message}`
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchTasks();
-  }, []);
-
   const handleSaveTask = async (taskData) => {
-    try {
-      if (editingTask) {
-        const updatedTask = await updateTask(editingTask.id, taskData);
-        setTasks(
-          tasks.map((task) => (task.id === editingTask.id ? updatedTask : task))
-        );
-      } else {
-        const newTask = await createTask({ ...taskData, completed: false });
-        setTasks((prevTasks) => [newTask, ...prevTasks]);
-      }
+    const success = editingTask
+      ? await editTask(editingTask.id, taskData)
+      : await addNewTask(taskData);
+
+    if (success) {
       handleCloseModal();
-    } catch (err) {
-      setError(`Failed to save task: ${err.message}`);
     }
   };
 
@@ -89,18 +65,8 @@ export default function TaskList() {
 
   const handleToggleComplete = async (taskId) => {
     const taskToToggle = tasks.find((t) => t.id === taskId);
-    if (!taskToToggle) return;
-
-    const newStatus = !taskToToggle.completed;
-
-    try {
-      const updatedTask = await updateTask(taskId, { completed: newStatus });
-
-      setTasks((prevTasks) =>
-        prevTasks.map((task) => (task.id === taskId ? updatedTask : task))
-      );
-    } catch (err) {
-      setError(`Failed to toggle task status: ${err.message}`);
+    if (taskToToggle) {
+      await toggleTaskCompletion(taskId, taskToToggle.completed);
     }
   };
 
@@ -115,7 +81,7 @@ export default function TaskList() {
   const completedTasksCount = tasks.filter((t) => t.completed).length;
   const totalTasks = tasks.length;
 
-  const deletingTask = tasks.find((t) => t.id === deleteTaskId);
+  const deleteConfirm = tasks.find((t) => t.id === deleteTaskId);
 
   if (isLoading) {
     return (
@@ -221,7 +187,7 @@ export default function TaskList() {
         <DialogContent>
           <Typography>
             Are you sure you want to delete this task
-            {deletingTask?.title ? `: "${deletingTask.title}"` : "?"} ?
+            {deleteConfirm?.title ? `: "${deleteConfirm.title}"` : "?"} ?
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -229,12 +195,11 @@ export default function TaskList() {
           <Button
             color="error"
             onClick={async () => {
-              try {
-                await deleteTask(deleteTaskId);
-                setTasks((prev) => prev.filter((t) => t.id !== deleteTaskId));
+              const success = await deleteTask(deleteTaskId);
+              if (success) {
                 setDeleteTaskId(null);
-              } catch (err) {
-                setError(`Failed to delete task: ${err.message}`);
+              } else {
+                console.error("Error deleting task");
               }
             }}
           >
