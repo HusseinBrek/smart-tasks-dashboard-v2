@@ -1,15 +1,27 @@
-import { Grid, Box, Typography, Paper } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import { Box, Typography, Paper } from "@mui/material";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import PendingIcon from "@mui/icons-material/Pending";
 import { BasicCard } from "../../components/common/Card";
-import { mockTasks } from "../../data/mockTasks";
+import { useTasks } from "../../context/TasksContext";
 
 export default function Dashboard() {
-  const totalTasks = mockTasks.length;
-  const completedTasks = mockTasks.filter((t) => t.completed).length;
+  const { tasks, isLoading, error } = useTasks();
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((t) => t.completed).length;
   const pendingTasks = totalTasks - completedTasks;
-  const highPriorityTasks = mockTasks.filter(
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return (
+      <div>Error: {typeof error === "string" ? error : error.message}</div>
+    );
+  }
+
+  const highPriorityTasks = tasks.filter(
     (t) => t.priority === "high" && !t.completed
   ).length;
 
@@ -57,7 +69,7 @@ export default function Dashboard() {
       {/* Statistics Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Grid item size={{ xs: 12, sm: 6, md: 3 }} key={index}>
             <Paper
               sx={{
                 p: 3,
@@ -116,7 +128,7 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={12}>
+        <Grid item size={{ xs: 12, sm: 6, md: 12 }}>
           <BasicCard title="Recent Tasks" sx={{ height: "100%" }}>
             <Typography
               variant="body2"
