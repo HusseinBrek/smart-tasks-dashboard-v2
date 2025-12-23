@@ -6,6 +6,7 @@ import {
   TextField,
   Stack,
   Box,
+  Link,
 } from "@mui/material";
 import { Button } from "../../components/common/Button";
 import { findUserByEmail, updatePassword } from "../../api/authService";
@@ -39,8 +40,12 @@ export default function ForgotPassword() {
     e.preventDefault();
     const success = await updatePassword(foundUserId, newPassword);
     if (success) {
-      toast.success("Password updated successfully! Please login.");
-      navigate("/login");
+      toast.success("Password updated successfully! Please login.", {
+        duration: 4000,
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 4000);
     } else {
       toast.error("Something went wrong. Please try again.");
     }
@@ -76,6 +81,9 @@ export default function ForgotPassword() {
                 <Button type="submit" fullWidth>
                   Verify Email
                 </Button>
+                <Link href="/login" underline="hover" sx={{ mt: 2 }}>
+                  Go to Login
+                </Link>
               </Stack>
             </form>
           ) : (
@@ -95,6 +103,9 @@ export default function ForgotPassword() {
                 <Button type="submit" fullWidth color="success">
                   Update Password
                 </Button>
+                <Link href="/login" underline="hover" sx={{ mt: 2 }}>
+                  Go to Login
+                </Link>
               </Stack>
             </form>
           )}

@@ -8,6 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useColorMode } from "../../theme/ThemeContext";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
+import Tooltip from "@mui/material/Tooltip";
 
 export default function Header() {
   const { user } = useAuth();
@@ -33,9 +34,15 @@ export default function Header() {
         </Typography>
 
         <Box sx={{ flexGrow: 1 }} />
-        <IconButton color="inherit" onClick={toggleColorMode} sx={{ mr: 2 }}>
-          {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
-        </IconButton>
+        <Tooltip
+          title={`Switch to ${
+            theme.palette.mode === "dark" ? "light" : "dark"
+          } mode`}
+        >
+          <IconButton color="inherit" onClick={toggleColorMode} sx={{ mr: 2 }}>
+            {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
+        </Tooltip>
 
         {user ? (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

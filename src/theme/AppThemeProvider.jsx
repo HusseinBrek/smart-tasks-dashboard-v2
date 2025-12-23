@@ -1,24 +1,19 @@
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import { useState, useMemo } from "react";
 import { ColorModeContext } from "./ThemeContext";
+import { toast } from "react-hot-toast";
 
 export default function AppThemeProvider({ children }) {
   const [mode, setMode] = useState(
     () => localStorage.getItem("themeMode") || "light"
   );
 
-  const colorMode = useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => {
-          const newMode = prevMode === "light" ? "dark" : "light";
-          localStorage.setItem("themeMode", newMode);
-          return newMode;
-        });
-      },
-    }),
-    []
-  );
+  const toggleColorMode = () => {
+    const newMode = mode === "light" ? "dark" : "light";
+    setMode(newMode);
+    localStorage.setItem("themeMode", newMode);
+    toast.success(`Switched to ${newMode} mode`);
+  };
 
   const theme = useMemo(
     () =>
@@ -40,7 +35,7 @@ export default function AppThemeProvider({ children }) {
   );
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
+    <ColorModeContext.Provider value={{ toggleColorMode }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {children}

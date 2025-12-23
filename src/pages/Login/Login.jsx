@@ -8,6 +8,8 @@ import {
   InputAdornment,
   IconButton,
   Link,
+  AppBar,
+  Toolbar,
 } from "@mui/material";
 import {
   Visibility,
@@ -48,6 +50,20 @@ export default function Login() {
   return (
     <Container component="main" maxWidth="xs">
       <Box
+        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      >
+        <AppBar>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Task Manager
+            </Typography>
+            <Button component={RouterLink} to="/login" variant="contained">
+              Sign In
+            </Button>
+          </Toolbar>
+        </AppBar>
+      </Box>
+      <Box
         sx={{
           mt: 8,
           display: "flex",
@@ -55,9 +71,12 @@ export default function Login() {
           alignItems: "center",
         }}
       >
-        <Paper elevation={3} sx={{ p: 4, width: "100%", borderRadius: 2 }}>
+        <Paper
+          elevation={3}
+          sx={{ p: 4, width: "100%", borderRadius: 2, mt: 4 }}
+        >
           <Box sx={{ mb: 3, textAlign: "center" }}>
-            <LoginIcon color="primary" sx={{ fontSize: 40 }} />
+            <LoginIcon color="primary" sx={{ fontSize: 40, mt: 2 }} />
             <Typography variant="h5" sx={{ fontWeight: "bold", mt: 1 }}>
               Sign In
             </Typography>
