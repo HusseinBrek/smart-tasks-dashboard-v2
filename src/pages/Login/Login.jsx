@@ -8,15 +8,17 @@ import {
   InputAdornment,
   IconButton,
   Link,
+  AppBar,
+  Toolbar,
 } from "@mui/material";
 import {
   Visibility,
   VisibilityOff,
   Login as LoginIcon,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/common/Button";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -48,6 +50,20 @@ export default function Login() {
   return (
     <Container component="main" maxWidth="xs">
       <Box
+        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      >
+        <AppBar>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Task Manager
+            </Typography>
+            <Button component={RouterLink} to="/login" variant="contained">
+              Sign In
+            </Button>
+          </Toolbar>
+        </AppBar>
+      </Box>
+      <Box
         sx={{
           mt: 8,
           display: "flex",
@@ -55,9 +71,12 @@ export default function Login() {
           alignItems: "center",
         }}
       >
-        <Paper elevation={3} sx={{ p: 4, width: "100%", borderRadius: 2 }}>
+        <Paper
+          elevation={3}
+          sx={{ p: 4, width: "100%", borderRadius: 2, mt: 4 }}
+        >
           <Box sx={{ mb: 3, textAlign: "center" }}>
-            <LoginIcon color="primary" sx={{ fontSize: 40 }} />
+            <LoginIcon color="primary" sx={{ fontSize: 40, mt: 2 }} />
             <Typography variant="h5" sx={{ fontWeight: "bold", mt: 1 }}>
               Sign In
             </Typography>
@@ -87,7 +106,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               error={!!errors.password}
               helperText={errors.password}
-              InputProps={{
+              slotProps={{
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton onClick={() => setShowPassword(!showPassword)}>
@@ -97,6 +116,22 @@ export default function Login() {
                 ),
               }}
             />
+
+            <Box
+              sx={{ display: "flex", justifyContent: "flex-end", mt: 1, mb: 2 }}
+            >
+              <Link
+                component={RouterLink}
+                to="/forgot-password"
+                variant="body2"
+                sx={{
+                  textDecoration: "none",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+              >
+                Forgot password?
+              </Link>
+            </Box>
 
             <Button type="submit" fullWidth sx={{ mt: 3, mb: 2, py: 1.5 }}>
               Login
