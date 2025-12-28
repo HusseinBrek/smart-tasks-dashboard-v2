@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server --watch db.json --port 3001 --middlewares ./cors.cjs"
+    "server": "json-server --watch db.json --port 3001 --middlewares ./cors.cjs",
+    "start": "json-server --watch db.json --port $PORT --middlewares ./cors.cjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
