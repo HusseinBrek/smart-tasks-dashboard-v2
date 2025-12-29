@@ -22,15 +22,12 @@ export async function registerUser(userData) {
 
 export const findUserByEmail = async (email) => {
   const response = await axios.get(`${API_URL}/users?email=${email}`);
-  const users = await response.json();
-  return users.length > 0 ? users[0] : null;
+  return response.data;
 };
 
 export const updatePassword = async (userId, newPassword) => {
-  const response = await axios(`${API_URL}/users/${userId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password: newPassword }),
+  const response = await axios.put(`${API_URL}/users/${userId}`, {
+    password: newPassword,
   });
-  return response.ok;
+  return response.data;
 };
