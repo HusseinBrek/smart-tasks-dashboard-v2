@@ -23,8 +23,10 @@ export default function ForgotPassword() {
 
   const handleFindAccount = async (e) => {
     e.preventDefault();
-    const user = await findUserByEmail(email);
-    if (user && user.id) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await findUserByEmail(normalizedEmail);
+
+    if (user) {
       setFoundUser(user);
       setStep(2);
       toast.success("Account found! Please enter your new password.", {

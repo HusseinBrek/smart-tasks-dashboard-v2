@@ -21,8 +21,12 @@ export async function registerUser(userData) {
 }
 
 export const findUserByEmail = async (email) => {
-  const response = await axios.get(`${API_URL}/users?email=${email}`);
-  return response.data;
+  const response = await fetch(
+    `${API_URL}/users?email=${encodeURIComponent(email.trim().toLowerCase())}`
+  );
+
+  const users = await response.json();
+  return users.length > 0 ? users[0] : null;
 };
 
 export const updatePassword = async (userId, newPassword) => {
