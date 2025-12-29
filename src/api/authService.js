@@ -26,8 +26,14 @@ export const findUserByEmail = async (email) => {
 };
 
 export const updatePassword = async (userId, newPassword) => {
-  const response = await axios.put(`${API_URL}/users/${userId}`, {
-    password: newPassword,
-  });
-  return response.data;
+  try {
+    const response = await axios.patch(`${API_URL}/users/${userId}`, {
+      password: newPassword,
+    });
+
+    return response.status === 200;
+  } catch (error) {
+    console.error("Update password failed:", error);
+    return false;
+  }
 };

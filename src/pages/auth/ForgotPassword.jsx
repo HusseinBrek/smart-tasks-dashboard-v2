@@ -40,6 +40,8 @@ export default function ForgotPassword() {
     e.preventDefault();
     const success = await updatePassword(foundUserId, newPassword);
     if (success) {
+      console.log("Reset password userId:", foundUserId);
+
       toast.success("Password updated successfully! Please login.", {
         duration: 4000,
       });
