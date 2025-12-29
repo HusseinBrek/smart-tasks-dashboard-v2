@@ -16,15 +16,16 @@ import { useNavigate } from "react-router-dom";
 export default function ForgotPassword() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
-  const [foundUserId, setFoundUserId] = useState(null);
+  const [foundUser, setFoundUser] = useState(null);
+
   const [newPassword, setNewPassword] = useState("");
   const navigate = useNavigate();
 
   const handleFindAccount = async (e) => {
     e.preventDefault();
     const user = await findUserByEmail(email);
-    if (user) {
-      setFoundUserId(user.id);
+    if (user && user.id) {
+      setFoundUser(user);
       setStep(2);
       toast.success("Account found! Please enter your new password.", {
         duration: 4000,
@@ -38,13 +39,19 @@ export default function ForgotPassword() {
 
   const handleReset = async (e) => {
     e.preventDefault();
-    const success = await updatePassword(foundUserId, newPassword);
-    if (success) {
-      console.log("Reset password userId:", foundUserId);
 
+    if (!foundUser?.id) {
+      toast.error("User not found. Please verify your email again.");
+      return;
+    }
+
+    const success = await updatePassword(foundUser.id, newPassword);
+
+    if (success) {
       toast.success("Password updated successfully! Please login.", {
         duration: 4000,
       });
+
       setTimeout(() => {
         navigate("/login");
       }, 4000);
@@ -102,7 +109,12 @@ export default function ForgotPassword() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
-                <Button type="submit" fullWidth color="success">
+                <Button
+                  type="submit"
+                  fullWidth
+                  color="success"
+                  disabled={!foundUser}
+                >
                   Update Password
                 </Button>
                 <Link href="/login" underline="hover" sx={{ mt: 2 }}>
